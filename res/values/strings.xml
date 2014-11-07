@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Intimate Interfaces</string>
+    <string name="title_section1">Main</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    
+    <!-- Settings  -->
+    <string name="remote_server">Remote Server</string>
+    <string name="default_server_ip">127.0.0.1</string>
+    <string name="pref_server_summary">Enter IP Address</string>
+
+</resources>
