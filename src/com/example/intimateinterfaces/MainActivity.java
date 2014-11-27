@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import android.support.v4.widget.DrawerLayout;
 
 
@@ -99,6 +100,16 @@ public class MainActivity extends Activity
         	startActivity(i);
             return true;
         }
+        
+        switch(item.getItemId()){
+	    	case R.id.action_clear:
+	    		//Toast.makeText(this, ((DrawingView)findViewById(R.id.drawingview)).test_val + "Clear", Toast.LENGTH_SHORT).show();
+	    		break;
+	    		
+	    	default:
+	    		break;
+	    	
+	    }
         return super.onOptionsItemSelected(item);
     }
 

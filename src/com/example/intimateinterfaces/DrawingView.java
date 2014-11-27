@@ -5,11 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff.Mode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class DrawingView extends View{
+/*
+ * NOTE: This class is not currently being used
+ */
+public class DrawingView extends View {
 
     public static final float TOUCH_TOLERANCE = 4;
     public static final float TOUCH_STROKE_WIDTH = 15;
@@ -40,6 +45,8 @@ public class DrawingView extends View{
     protected float mx;
     protected float my;
 
+    public int test_val = 0;
+    
     public DrawingView(Context context) {
         super(context);
         init();
@@ -54,7 +61,11 @@ public class DrawingView extends View{
         super(context, attrs, defStyleAttr);
         init();
     }
-
+   
+    protected void reset() {
+        mPath = new Path();
+    }
+    
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -92,14 +103,12 @@ public class DrawingView extends View{
         mPaintFinal.setStrokeWidth(TOUCH_STROKE_WIDTH);
     }
 
-    protected void reset() {
-        mPath = new Path();
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mx = event.getX();
         my = event.getY();
+        test_val++;
         onTouchEventLine(event);
         return true;
     }
