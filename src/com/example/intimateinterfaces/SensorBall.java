@@ -12,18 +12,17 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 
-public class SensorBall extends View{
+public class SensorBall extends View {
   
     //Create a paint for the stroke  
-    private Paint circlePaint;  
+    private Paint circlePaint;
   
     //Two floats to store the touch position  
-    private float radius = 200;
+    private float radius = 200; //default radius
     private float viewWidth;
     private float viewHeight;
-    private float posX = 0;  
+    private float posX = 0;
     private float posY = 0;
-    
 
 	public SensorBall(Context context) {
         super(context);
@@ -48,7 +47,7 @@ public class SensorBall extends View{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d("Position", "X: " + posX + " Y: " + posY);
+        Log.d("Draw Position", "X: " + posX + " Y: " + posY);
         canvas.drawCircle(posX, posY, radius, circlePaint);
     }
     
@@ -58,14 +57,14 @@ public class SensorBall extends View{
         if(event.getAction() == MotionEvent.ACTION_MOVE)  { 
         	
         	if(withinCircle(event.getX(), event.getY())) {
-        		posX = event.getX();  
+        		posX = event.getX();
                 posY = event.getY();
                 
                 invalidate();
-        	}   
-        }  
+        	}
+        }
         return true;
-    } 
+    }
     
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -76,31 +75,33 @@ public class SensorBall extends View{
         viewWidth = widthSize;
         viewHeight = heightSize;
         posX = viewWidth / 2; //centre of the screen
-        posY = viewWidth / 2 + 200; //centre of the screen plus the radius
+        posY = viewHeight / 2; //centre of the screen plus the radius
 
         //MUST CALL THIS
         setMeasuredDimension((int) viewWidth, (int) viewHeight);
-        Log.d("Screen", "Width: " + viewWidth + " Height: " + viewHeight);
+        
+        Log.d("Screen: onMeasure", "Width: " + viewWidth + " Height: " + viewHeight +
+        		" New Positions {X:" + posX + " Y: " + posY + "}");
     }
     
     /*
      * Initialise the view when it is created
      */
     protected void init() {
-    	//This View can receive focus, so it can react to touch events.  
-        this.setFocusable(true);  
+    	//This View can receive focus, so it can react to touch events.
+        this.setFocusable(true);
   
         //Initialize the strokePaint object and define some of its parameters  
         circlePaint = new Paint();
         circlePaint.setDither(true);
         circlePaint.setColor(0xFF8AAAC7);
         circlePaint.setAntiAlias(true);
-        circlePaint.setStrokeWidth(3); 
+        circlePaint.setStrokeWidth(3);
 
     }
     
     /*
-     * Using Pythagoras to measure the distance between 
+     * Using Pythagoras to measure the distance between
      * the new point and the center to see if it's lower than the radius.
      * Used to see if the user has touched the sensor ball or not.
      */
