@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -20,6 +21,7 @@ public class SensorBall extends View {
   
     //Two floats to store the touch position  
     private float radius = 200; //default radius
+    private final int MIN_RADIUS = 200;
     private float viewWidth;
     private float viewHeight;
     private float posX = 0;
@@ -33,20 +35,24 @@ public class SensorBall extends View {
     private Handler h;
     private final int FRAME_RATE = 10;
     private boolean rePosition;
+    
+    //Scale variables
+    private ScaleGestureDetector mScaleDetector;
+    private float mScaleFactor = 1.f;
 
 	public SensorBall(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public SensorBall(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public SensorBall(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
     
     /*
@@ -62,7 +68,8 @@ public class SensorBall extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d("Draw Position", "X: " + posX + " Y: " + posY);
+
+        //Log.d("Draw Position", "X: " + posX + " Y: " + posY);
         canvas.drawCircle(posX, posY, radius, circlePaint);
         
         if(rePosition) {
@@ -86,18 +93,29 @@ public class SensorBall extends View {
     
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	//Store the position of the touch event at 'posX' and 'posY'  
-        if(event.getAction() == MotionEvent.ACTION_MOVE)  { 
-        	if(withinCircle(event.getX(), event.getY(), radius)) { //make sure the user is touching within the sensor ball
-        		posX = event.getX();
-                posY = event.getY();
-                rePosition = false;
-                invalidate();
+    	
+    	// Let the ScaleGestureDetector inspect all events.
+        mScaleDetector.onTouchEvent(event);
+        
+        final int action = event.getAction();
+        switch (action & MotionEvent.ACTION_MASK) {   
+        	//Store the position of the touch event at 'posX' and 'posY'  
+        	case MotionEvent.ACTION_MOVE: {
+        		if( !mScaleDetector.isInProgress() &&
+        				withinCircle(event.getX(), event.getY(), radius)) { //make sure the user is touching within the sensor ball
+            		posX = event.getX();
+                    posY = event.getY();
+                    rePosition = false;
+                    invalidate();
+            	}
+        		break;
         	}
-        }
-        else if(event.getAction() == MotionEvent.ACTION_UP) { //user has released the ball
-        	rePosition = true;
-        	invalidate();
+        	
+        	case MotionEvent.ACTION_UP: {
+        		rePosition = true;
+            	invalidate();
+            	break;
+        	}
         }
         return true;
     }
@@ -126,9 +144,11 @@ public class SensorBall extends View {
     /*
      * Initialise the view when it is created
      */
-    protected void init() {
+    protected void init(Context context) {
     	
     	h = new Handler();
+    	
+    	mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
     	
     	//This View can receive focus, so it can react to touch events.
         this.setFocusable(true);
@@ -150,6 +170,35 @@ public class SensorBall extends View {
     private boolean withinCircle(float x, float y, float rad) {
     	float dist = (float) Math.sqrt(Math.pow(posX - x, 2) + Math.pow(posY - y, 2));
     	return dist < rad;
+    }
+    
+    
+    
+    /*
+     * Listens to the Scale events
+     */
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mScaleFactor *= detector.getScaleFactor();
+
+            // Don't let the object get too small or too large.
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
+            
+            float span = detector.getCurrentSpan() / 2;
+            posX = detector.getFocusX();
+            posY = detector.getFocusY();
+            
+            if(span > (Math.min(viewWidth, viewHeight) / 2))
+            	radius = Math.min(viewWidth, viewHeight) / 2;
+            else if (span < MIN_RADIUS)
+            	radius = MIN_RADIUS;
+            else
+            	radius = span;
+            
+            invalidate();
+            return true;
+        }
     }
     
 }
