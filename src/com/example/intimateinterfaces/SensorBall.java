@@ -1,5 +1,10 @@
 package com.example.intimateinterfaces;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,6 +44,11 @@ public class SensorBall extends View {
     //Scale variables
     private ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
+    
+    //Timer Variables
+    private final double UPDATE_TIME = 100; //100 milliseconds
+    private float prevPosX = -1;
+    private float prevPosY = -1;
 
 	public SensorBall(Context context) {
         super(context);
@@ -159,6 +169,10 @@ public class SensorBall extends View {
         circlePaint.setColor(0xFF8AAAC7);
         circlePaint.setAntiAlias(true);
         circlePaint.setStrokeWidth(3);
+        
+        //timer for finding position and calculate the velocity
+        Timer timer = new Timer();
+        timer.schedule(new PositionTimer(), 0, (int) UPDATE_TIME);
 
     }
     
@@ -172,6 +186,37 @@ public class SensorBall extends View {
     	return dist < rad;
     }
     
+    /*
+     * Used to calculate the velocity of the sensor ball
+     */
+    private double calculateVelocity(float x1, float x2, float y1, float y2) {
+    	float xDist = Math.abs(x2 - x1);
+    	float yDist = Math.abs(y2 - y1);
+    	double distance = (float) Math.sqrt(Math.pow(xDist,2) + Math.pow(yDist, 2));
+    	double time = UPDATE_TIME / 1000;
+    	
+    	return distance / time;
+    }
+    
+    /*
+     * 
+     */
+    private class PositionTimer extends TimerTask {
+    	
+    	@Override
+        public void run() {
+    		if(prevPosX != -1 && prevPosY != -1) {
+    			double velocity = calculateVelocity(prevPosX, posX, prevPosY, posY);
+    			Log.d("Velocity", "Vel: " + velocity + " prevX: " + prevPosX + " posX: " + posX);
+    			prevPosX = -1;
+    			prevPosY = -1;
+    		}
+    		else {
+    			prevPosX = posX;
+    			prevPosY = posY;
+    		}
+        }
+     }
     
     
     /*
