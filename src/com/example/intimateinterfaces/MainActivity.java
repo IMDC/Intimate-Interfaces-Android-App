@@ -59,10 +59,10 @@ public class MainActivity extends Activity
                 mTitle = getString(R.string.title_section1);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                //mTitle = getString(R.string.title_section2);
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                //mTitle = getString(R.string.title_section3);
                 break;
         }
     }
@@ -102,12 +102,12 @@ public class MainActivity extends Activity
         }
         
         switch(item.getItemId()){
-	    	case R.id.action_clear:
-	    		//Toast.makeText(this, ((DrawingView)findViewById(R.id.drawingview)).test_val + "Clear", Toast.LENGTH_SHORT).show();
-	    		break;
-	    		
-	    	default:
-	    		break;
+//	    	case R.id.action_clear:
+//	    		//Toast.makeText(this, ((DrawingView)findViewById(R.id.drawingview)).test_val + "Clear", Toast.LENGTH_SHORT).show();
+//	    		break;
+//	    		
+//	    	default:
+//	    		break;
 	    	
 	    }
         return super.onOptionsItemSelected(item);

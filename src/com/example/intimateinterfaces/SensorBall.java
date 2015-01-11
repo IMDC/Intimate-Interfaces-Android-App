@@ -2,12 +2,7 @@ package com.example.intimateinterfaces;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Handler;
@@ -16,8 +11,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 
 public class SensorBall extends View {
   
@@ -65,7 +58,7 @@ public class SensorBall extends View {
         init(context);
     }
     
-    /*
+    /**
      * Thread that runs the animation
      */
     private Runnable r = new Runnable() {
@@ -79,7 +72,6 @@ public class SensorBall extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        //Log.d("Draw Position", "X: " + posX + " Y: " + posY);
         canvas.drawCircle(posX, posY, radius, circlePaint);
         
         if(rePosition) {
@@ -151,7 +143,7 @@ public class SensorBall extends View {
         		" New Positions {X:" + posX + " Y: " + posY + "}");
     }
     
-    /*
+    /**
      * Initialise the view when it is created
      */
     protected void init(Context context) {
@@ -176,7 +168,7 @@ public class SensorBall extends View {
 
     }
     
-    /*
+    /**
      * Using Pythagoras to measure the distance between
      * the new point and the center to see if it's lower than the radius.
      * Used to see if the user has touched the sensor ball or not.
@@ -186,7 +178,7 @@ public class SensorBall extends View {
     	return dist < rad;
     }
     
-    /*
+    /**
      * Used to calculate the velocity of the sensor ball
      */
     private double calculateVelocity(float x1, float x2, float y1, float y2) {
@@ -198,18 +190,27 @@ public class SensorBall extends View {
     	return distance / time;
     }
     
-    /*
-     * 
+    /**
+     * Used to calculate the velocity of the sensor ball.
+     * This data is then sent to a converter to indicate whether 
+     * the combination of velocity and scale will be classified as "SLOW"
+     * or "FAST". The converter will be sent to the data sender which sends this
+     * data to the II server 
      */
     private class PositionTimer extends TimerTask {
-    	
+    	DataSender dataSender = new DataSender();
+    	DataConverter dataConverter = new DataConverter(); 
+		
     	@Override
         public void run() {
     		if(prevPosX != -1 && prevPosY != -1) {
     			double velocity = calculateVelocity(prevPosX, posX, prevPosY, posY);
-    			Log.d("Velocity", "Vel: " + velocity + " prevX: " + prevPosX + " posX: " + posX);
+    			//Log.d("Velocity", "Vel: " + velocity + "Scale: " + mScaleFactor + " RawVal: " + velocity * mScaleFactor);
     			prevPosX = -1;
     			prevPosY = -1;
+    			
+    			dataConverter.convert(mScaleFactor, velocity);
+    			dataSender.sendData(dataConverter);
     		}
     		else {
     			prevPosX = posX;
@@ -219,8 +220,8 @@ public class SensorBall extends View {
      }
     
     
-    /*
-     * Listens to the Scale events
+    /**
+     * Listens to the Scale events (radius of the sensor ball)
      */
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override

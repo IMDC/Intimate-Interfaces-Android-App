@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.intimateinterfaces.MainActivity" >
 
-    <item
+    <!-- <item
         android:id="@+id/action_clear"
         android:showAsAction="withText|ifRoom"
-        android:title="@string/action_clear"/>
+        android:title="@string/action_clear"/> -->
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

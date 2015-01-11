@@ -3,8 +3,8 @@
 
     <string name="app_name">Intimate Interfaces</string>
     <string name="title_section1">Main</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <!-- <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string> -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_clear">Clear</string>
@@ -14,5 +14,9 @@
     <string name="remote_server">Remote Server</string>
     <string name="default_server_ip">127.0.0.1</string>
     <string name="pref_server_summary">Enter IP Address</string>
+    
+    <string name="remote_server_port">Remote Server Port</string>
+    <string name="default_server_port">9090</string>
+    <string name="pref_server_port_summary">Enter Server Port</string>
 
 </resources>

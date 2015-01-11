@@ -10,6 +10,14 @@
 	        android:summary="@string/pref_server_summary"
 	        android:dialogTitle="Enter Server IP Address"
 	        android:defaultValue="@string/default_server_ip" />
+	    <EditTextPreference
+	        android:key="pref_server_port"
+	        android:title="@string/remote_server_port"
+	        android:summary="@string/pref_server_port_summary"
+	        android:dialogTitle="Enter Server Port"
+	        android:defaultValue="@string/default_server_port"
+	        android:numeric="integer"
+    		android:maxLength="4" />
 	</PreferenceCategory>
     
 </PreferenceScreen>
