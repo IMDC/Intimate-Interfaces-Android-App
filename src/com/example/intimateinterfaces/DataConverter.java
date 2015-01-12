@@ -8,7 +8,8 @@ package com.example.intimateinterfaces;
  */
 public class DataConverter {
 
-	AnimationSpeed animationSpeed;
+	private AnimationSpeed animationSpeed;
+	private static final int THRESHHOLD = 500;
 	
 	public DataConverter() {
 		//set a default value of 0 which will yield 
@@ -26,7 +27,7 @@ public class DataConverter {
 	public void convert(double scale, double velocity) {
 		double rawValue = scale * velocity;
 		
-		if(rawValue < 500)
+		if(rawValue < THRESHHOLD)
 			animationSpeed = AnimationSpeed.SLOW;
 		else
 			animationSpeed = AnimationSpeed.FAST;

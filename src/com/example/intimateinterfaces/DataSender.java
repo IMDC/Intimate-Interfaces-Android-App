@@ -5,29 +5,37 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * Send data to II server (needs to be on the same network as the application device)
  * 
  * @author IMDC
- *
  */
 public class DataSender {
 
-	InetAddress receiverAddress;
-	DatagramSocket datagramSocket;
+	private InetAddress receiverAddress;
+	private DatagramSocket datagramSocket;
+	private Context context;
 	
-	public DataSender() {
-		
+	public DataSender(Context context) {
+		//need the context in order to access the shared preferences
+		this.context = context;
 	}
 	
 	private int getServerPort() {
-		return 9090;
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
+		int serverPort = Integer.parseInt(prefs.getString("pref_server_port", "9090"));
+		return serverPort;
 	}
 	
 	private String getServerIP() {
-		return "10.232.153.174";
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
+		String serverIP = prefs.getString("pref_server", "127.0.0.1");
+		return serverIP;
 	}
 	
 	/**
@@ -36,7 +44,7 @@ public class DataSender {
 	 */
 	public void sendData(DataConverter dataConverter) {
 		
-		String messegeStr= "APP::";// + dataConverter.getAnimationSpeed();
+		String messegeStr= "" + dataConverter.getAnimationSpeed();
 		int server_port = getServerPort();
 		
 		try {

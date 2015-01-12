@@ -13,6 +13,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 public class SensorBall extends View {
+	
+	private Context context;
   
     //Create a paint for the stroke  
     private Paint circlePaint;
@@ -139,8 +141,8 @@ public class SensorBall extends View {
         //MUST CALL THIS
         setMeasuredDimension((int) viewWidth, (int) viewHeight);
         
-        Log.d("Screen: onMeasure", "Width: " + viewWidth + " Height: " + viewHeight +
-        		" New Positions {X:" + posX + " Y: " + posY + "}");
+//        Log.d("Screen: onMeasure", "Width: " + viewWidth + " Height: " + viewHeight +
+//        		" New Positions {X:" + posX + " Y: " + posY + "}");
     }
     
     /**
@@ -149,6 +151,8 @@ public class SensorBall extends View {
     protected void init(Context context) {
     	
     	h = new Handler();
+    	
+    	this.context = context;
     	
     	mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
     	
@@ -198,7 +202,7 @@ public class SensorBall extends View {
      * data to the II server 
      */
     private class PositionTimer extends TimerTask {
-    	DataSender dataSender = new DataSender();
+    	DataSender dataSender = new DataSender(context);
     	DataConverter dataConverter = new DataConverter(); 
 		
     	@Override
